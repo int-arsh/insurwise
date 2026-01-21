@@ -13,4 +13,18 @@ dependencies = [
     "streamlit>=1.28.0",
     "requests>=2.31.0",
     "uvicorn[standard]>=0.24.0",
+    "black>=26.1.0",
+    "autopep8>=2.3.2",
+    "yapf>=0.43.0",
+    "isort>=7.0.0",
+    "flake8>=7.3.0",
 ]
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
