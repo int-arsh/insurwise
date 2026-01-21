@@ -1,5 +1,5 @@
-import streamlit as st
 import requests
+import streamlit as st
 
 API_URL = "http://127.0.0.1:8000/predict"
 
@@ -15,7 +15,15 @@ smoker = st.selectbox("Are you a smoker?", options=[True, False])
 city = st.text_input("City", value="Mumbai")
 occupation = st.selectbox(
     "Occupation",
-    ['retired', 'freelancer', 'student', 'government_job', 'business_owner', 'unemployed', 'private_job']
+    [
+        "retired",
+        "freelancer",
+        "student",
+        "government_job",
+        "business_owner",
+        "unemployed",
+        "private_job",
+    ],
 )
 
 if st.button("Predict Premium Category"):
@@ -26,7 +34,7 @@ if st.button("Predict Premium Category"):
         "income_lpa": income_lpa,
         "smoker": smoker,
         "city": city,
-        "occupation": occupation
+        "occupation": occupation,
     }
 
     try:
@@ -35,7 +43,9 @@ if st.button("Predict Premium Category"):
 
         if response.status_code == 200 and "response" in result:
             prediction = result["response"]
-            st.success(f"Predicted Insurance Premium Category: **{prediction['predicted_category']}**")
+            st.success(
+                f"Predicted Insurance Premium Category: **{prediction['predicted_category']}**"
+            )
             st.write("🔍 Confidence:", prediction["confidence"])
             st.write("📊 Class Probabilities:")
             st.json(prediction["class_probabilities"])
