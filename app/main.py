@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from schemas import Prediction_Response
+from .schemas import Prediction_Response
 
 from model.ml import predict_category
 

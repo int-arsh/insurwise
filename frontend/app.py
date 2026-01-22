@@ -1,7 +1,10 @@
 import requests
 import streamlit as st
 
-API_URL = "http://127.0.0.1:8000/predict"
+# Use environment variable for API URL, with fallback to localhost for local development
+import os
+
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/predict")
 
 st.title("Insurance Premium Category Predictor")
 st.markdown("Enter your details below:")
@@ -38,21 +41,25 @@ if st.button("Predict Premium Category"):
     }
 
     try:
-        response = requests.post(API_URL, json=input_data)
+        response = requests.post(API_URL, json=input_data, timeout=10)
         result = response.json()
 
-        if response.status_code == 200 and "response" in result:
-            prediction = result["response"]
+        if response.status_code == 200 and "predicted_category" in result:
+            prediction = result["predicted_category"]
             st.success(
                 f"Predicted Insurance Premium Category: **{prediction['predicted_category']}**"
             )
-            st.write("🔍 Confidence:", prediction["confidence"])
-            st.write("📊 Class Probabilities:")
+            st.write("Confidence:", prediction["confidence"])
+            st.write("Class Probabilities:")
             st.json(prediction["class_probabilities"])
 
         else:
             st.error(f"API Error: {response.status_code}")
             st.write(result)
 
+    except requests.exceptions.Timeout:
+        st.error("Request timed out. The API server is taking too long to respond.")
     except requests.exceptions.ConnectionError:
-        st.error("Could not connect to the FastAPI server. Make sure it's running.")
+        st.error(f"Could not connect to the API server at {API_URL}. Make sure it's running and accessible.")
+    except Exception as e:
+        st.error(f"An unexpected error occurred: {str(e)}")
